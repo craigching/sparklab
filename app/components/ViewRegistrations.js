@@ -1,34 +1,11 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Griddle = require('griddle-react');
 
-var Alert = require('react-bootstrap/lib/Alert');
-var Input = require('react-bootstrap/lib/Input');
-var Button = require('react-bootstrap/lib/Button');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
 
-var $ = require('jquery');
+const React = require('react');
 
-const CreateAccount = React.createClass({
-    getInitialState: function() {
-        return {
-            username: ''
-        };
-    },
-
-    render: function() {
-        return (
-          <form>
-            <Input type="text" label="Enter your id" placeholder="Enter text" />
-            <ButtonInput type="submit" value="Create" />
-          </form>
-        );
-    }
-});
-
+const Griddle = require('griddle-react');
+const Status = require('./Status');
+const Link = require('./Link');
+const $ = require('jquery');
 
 const Loading = React.createClass({
     getDefaultProps: function(){
@@ -41,7 +18,7 @@ const Loading = React.createClass({
     }
 });
 
-const ViewAccounts = React.createClass({
+module.exports = React.createClass({
 
     getInitialState: function(){
         var initial = { "results": [],
@@ -65,14 +42,14 @@ const ViewAccounts = React.createClass({
     },
 
     getExternalData: function(page){
-        var that = this;
+
         page = page||1
 
         this.setState({
             isLoading: true
         });
 
-        $.getJSON(this.props.source, function(data) {
+        $.getJSON('docker/status', function(data) {
             if (this.isMounted()) {
                 this.setState({
                     results: data,
@@ -94,7 +71,6 @@ const ViewAccounts = React.createClass({
     },
 
     setFilter: function(filter) {
-        console.log("set filter: '" + filter + "'");
 
         if (!filter || filter.length === 0) {
             // Restore the original results
@@ -123,9 +99,27 @@ const ViewAccounts = React.createClass({
         }
     },
 
+    getColumnMetadata: function() {
+        return [
+            {
+                'columnName': 'status',
+                'locked' : false,
+                'visible' : true,
+                'customComponent' : Status,
+                'onRefresh' : this.getExternalData
+            },
+            {
+                'columnName': 'url',
+                'locked' : false,
+                'visible' : true,
+                'customComponent' : Link
+            }
+        ];
+    },
+
     render: function(){
-      //columns={["name", "city", "state", "country"]}
-        return <Griddle useExternal={true} externalSetPage={this.setPage} enableSort={false} columns={["name", "status", "control", "url"]}
+        return <Griddle useExternal={true} externalSetPage={this.setPage} enableSort={false} columns={["name", "status", "url"]}
+        columnMetadata={this.getColumnMetadata()}
         showFilter={true} showSettings={false}
         externalSetPageSize={this.setPageSize} externalMaxPage={this.state.maxPages}
         externalChangeSort={function(){}} externalSetFilter={this.setFilter}
@@ -133,16 +127,3 @@ const ViewAccounts = React.createClass({
         externalSortColumn={this.state.externalSortColumn} externalSortAscending={this.state.externalSortAscending} externalLoadingComponent={Loading} externalIsLoading={this.state.isLoading}/>
     }
 });
-
-const gridInstance = (
-  <Grid>
-    <Row className="show-grid">
-        <Col xs={12} md={8}><CreateAccount /></Col>
-    </Row>
-    <Row className="show-grid">
-        <Col xs={12} md={8}><ViewAccounts source="api/v1/status"/></Col>
-    </Row>
-  </Grid>
-);
-
-ReactDOM.render(gridInstance, document.getElementById('app'));
