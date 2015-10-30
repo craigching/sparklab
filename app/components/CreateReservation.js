@@ -6,6 +6,8 @@ const Button = require('react-bootstrap/lib/Button');
 const ButtonInput = require('react-bootstrap/lib/ButtonInput');
 const $ = require('jquery');
 
+const reservationService = require('../services/ReservationService');
+
 module.exports = React.createClass({
 
     getInitialState: function() {
@@ -17,13 +19,9 @@ module.exports = React.createClass({
     handleSubmit: function(e) {
 
         var reservationId = $('#reservation_id').val();
-        var url = "docker/register/" + reservationId;
 
-        $.post(url, function() {
-            console.log(arguments);
-            //this.props.refresh();
-        }.bind(this));
-
+        this.reservationService.create(reservationId, function() {
+        });
 
         e.preventDefault();
     },

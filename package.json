@@ -10,8 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^3.3.5",
+    "flux": "^2.1.1",
     "griddle-react": "^0.2.14",
     "jquery": "^2.1.4",
+    "object-assign": "^4.0.1",
     "react": "^0.14.0",
     "react-bootstrap": "^0.27.2",
     "react-dom": "^0.14.0",

@@ -7,6 +7,8 @@ const Status = require('./Status');
 const Link = require('./Link');
 const $ = require('jquery');
 
+const reservationService = require('../services/ReservationService');
+
 const Loading = React.createClass({
     getDefaultProps: function(){
         return {
@@ -49,7 +51,7 @@ module.exports = React.createClass({
             isLoading: true
         });
 
-        $.getJSON('docker/status', function(data) {
+        reservationService.get($.proxy(function(data) {
             if (this.isMounted()) {
                 this.setState({
                     results: data,
@@ -58,7 +60,7 @@ module.exports = React.createClass({
                     isLoading: false
                 });
             }
-        }.bind(this));
+        }, this));
     },
 
     setPage: function(index){
