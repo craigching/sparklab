@@ -8,6 +8,7 @@ const Link = require('./Link');
 const $ = require('jquery');
 
 const reservationService = require('../services/ReservationService');
+const reservationStore = require('../stores/ReservationsStore');
 
 const Loading = React.createClass({
     getDefaultProps: function(){
@@ -40,7 +41,12 @@ module.exports = React.createClass({
     },
 
     componentDidMount: function(){
+        reservationStore.addChangeListener(this.getExternalData);
         this.getExternalData();
+    },
+
+    componentWillUnmount: function() {
+        reservationStore.removeChangeListener(this.getExternalData);
     },
 
     getExternalData: function(page){

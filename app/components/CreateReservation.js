@@ -7,6 +7,7 @@ const ButtonInput = require('react-bootstrap/lib/ButtonInput');
 const $ = require('jquery');
 
 const reservationService = require('../services/ReservationService');
+const reservationCreatedAction = require('../actions/ReservationCreatedAction');
 
 module.exports = React.createClass({
 
@@ -20,7 +21,9 @@ module.exports = React.createClass({
 
         var reservationId = $('#reservation_id').val();
 
-        this.reservationService.create(reservationId, function() {
+        reservationService.create(reservationId, function() {
+            $('#reservation_id').val('');
+            reservationCreatedAction.didCreateReservation();
         });
 
         e.preventDefault();
